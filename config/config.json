@@ -1,0 +1,18 @@
+{
+  "server": {
+    "app_mode": "debug",
+    "http_port": ":8989"
+  },
+  "mysql": {
+    "host": "127.0.0.1",
+    "port": 3306,
+    "user": "ginblog",
+    "password": "123456",
+    "dbname": "ginblog"
+  },
+  "token": {
+    "jwt_key": "Acg!%D2#",
+    "private": "static/pem/private-key.pem",
+    "public": "static/pem/public-key.pem"
+  }
+}

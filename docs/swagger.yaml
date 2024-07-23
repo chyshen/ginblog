@@ -1,0 +1,263 @@
+basePath: /api/v1
+definitions:
+  models.HTTPError:
+    properties:
+      code:
+        example: 300
+        type: integer
+      data: {}
+      message:
+        example: 请求失败
+        type: string
+    type: object
+  models.UserAddModel:
+    properties:
+      password:
+        example: "123456"
+        maxLength: 64
+        minLength: 6
+        type: string
+      role:
+        example: 3
+        type: integer
+      username:
+        example: test
+        maxLength: 100
+        minLength: 4
+        type: string
+    required:
+    - password
+    - role
+    - username
+    type: object
+  models.UserPasswordModel:
+    properties:
+      password:
+        example: "123456"
+        maxLength: 18
+        minLength: 6
+        type: string
+    required:
+    - password
+    type: object
+  models.UserUpdateModel:
+    properties:
+      role:
+        example: 3
+        type: integer
+      username:
+        example: test
+        maxLength: 50
+        minLength: 4
+        type: string
+    required:
+    - role
+    - username
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8989
+info:
+  contact:
+    email: mr.scy@outlook.com
+    name: scy
+    url: http://github.com/chyshen
+  description: 个人博客
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: 个人博客API
+  version: "1.0"
+paths:
+  /test:
+    get:
+      description: 测试接口
+      responses: {}
+      summary: 测试
+      tags:
+      - 测试
+  /user/add:
+    post:
+      consumes:
+      - application/json
+      description: 接口鉴权，需在接口中配置 @Security ApiKeyAuth ,同时主函数中需先启用鉴权，可参考main.go中鉴权注释
+      parameters:
+      - description: 新增用户
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserAddModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserAddModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 新增用户
+      tags:
+      - User
+  /user/del/{id}:
+    delete:
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        type: integer
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 删除用户
+      tags:
+      - User
+  /user/list:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户名
+        in: query
+        name: username
+        type: string
+      - default: 10
+        description: 每页显示的条目
+        in: query
+        name: pagesize
+        required: true
+        type: integer
+      - default: 1
+        description: 页码
+        in: query
+        name: pagenum
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 用户列表
+      tags:
+      - User
+  /user/password/{id}:
+    put:
+      parameters:
+      - description: 用户id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 修改密码
+        in: body
+        name: Password
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserPasswordModel'
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 修改用户密码
+      tags:
+      - User
+  /user/query/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - default: 1
+        description: 用户id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 查询单个用户
+      tags:
+      - User
+  /user/update:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户id
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: 更新用户
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserUpdateModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserUpdateModel'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新用户
+      tags:
+      - User
+securityDefinitions:
+  ApiKeyAuth:
+    description: 在输入框中输入请求头中需要的Jwt授权Token，格式：Bearer Token
+    in: header
+    name: Authorization
+    type: apiKey
+  BasicAuth:
+    type: basic
+  OAuth2AccessCode:
+    authorizationUrl: https://example.com/oauth/authorize
+    flow: accessCode
+    scopes:
+      admin: Grants read and write access to administrative information
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+  OAuth2Application:
+    flow: application
+    scopes:
+      admin: Grants read and write access to administrative information
+      write: Grants write access
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+  OAuth2Implicit:
+    authorizationUrl: https://example.com/oauth/authorize
+    flow: implicit
+    scopes:
+      admin: Grants read and write access to administrative information
+      write: Grants write access
+    type: oauth2
+  OAuth2Password:
+    flow: password
+    scopes:
+      admin: Grants read and write access to administrative information
+      read: Grants read access
+      write: Grants write access
+    tokenUrl: https://example.com/oauth/token
+    type: oauth2
+swagger: "2.0"
